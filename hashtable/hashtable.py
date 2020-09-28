@@ -95,7 +95,7 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        print(f"Key: {key} {self.hash_index(key)} Text: {value}")
+        # print(f"Key: {key} {self.hash_index(key)} Text: {value}")
         self.table[self.hash_index(key)] = value
 
 
