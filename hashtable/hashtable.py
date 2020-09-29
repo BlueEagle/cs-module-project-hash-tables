@@ -106,8 +106,10 @@ class HashTable:
             newHead = HashTableEntry(key, value)
             newHead.next = self.table[self.hash_index(key)]
             self.table[self.hash_index(key)] = newHead
+            print(f"Key: {key} Index: {self.hash_index(key)} Head: {newHead.value}")
         else:
             self.table[self.hash_index(key)] = HashTableEntry(key, value)
+            print(f"Key: {key} Index: {self.hash_index(key)} Head: {HashTableEntry(key, value).value}")
         # self.table[self.hash_index(key)] = value
         # else, add a new HashTableEntry
 
@@ -122,9 +124,28 @@ class HashTable:
         """
         # Your code here
         if self.table[self.hash_index(key)]: 
-            self.table[self.hash_index(key)] = None
-            return
-        print(f"Entry with key: {key} not found!")
+            '''
+            The hash was matched, search for the correct key in the table and delete it.
+            '''
+            # if the current item is the one being deleted, do so.
+            if self.table[self.hash_index(key)].key == key:
+                self.table[self.hash_index(key)] = self.table[self.hash_index(key)].next
+            else:
+                prev = self.table[self.hash_index(key)]
+                cur = self.table[self.hash_index(key)].next
+                if not cur: print(f"Entry with key: {key} not found!")
+                while cur.next:
+                    if cur.key == key:
+                        # remove this node
+                        prev.next = cur.next
+                        # return
+                        return
+                    prev = cur
+                    cur = cur.next
+            # self.table[self.hash_index(key)] = None
+            # return
+        else:
+            print(f"Entry with key: {key} not found!")
 
 
     def get(self, key):
@@ -139,10 +160,10 @@ class HashTable:
         if self.table[self.hash_index(key)]:
             newString = ''
             cur = self.table[self.hash_index(key)]
-            newString += str(cur.value)
+            newString += cur.value
             cur = cur.next
             while cur:
-                newString += "\n"+str(cur.value)
+                newString += "\n"+ cur.value
                 cur = cur.next
             return newString
                 # return self.table[self.hash_index(key)]
