@@ -7,6 +7,9 @@ class HashTableEntry:
         self.value = value
         self.next = None
 
+    # def __repr__(self):
+    #     return self.value
+
 
 # Hash table can't have fewer than this many slots
 MIN_CAPACITY = 8
@@ -23,6 +26,9 @@ class HashTable:
     def __init__(self, capacity):
         self.capacity = capacity
         self.table = [None] * capacity
+        '''
+            Each entry will be the head of a separate linked list.
+        '''
 
 
     def get_num_slots(self):
@@ -58,7 +64,7 @@ class HashTable:
 
         # Your code here
         FNV_prime = 1099511628211
-        FNV_size = 2**64
+        # FNV_size = 2**64
         offset_basis = 14695981039346656037
 
         hash = offset_basis
@@ -95,8 +101,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        # print(f"Key: {key} {self.hash_index(key)} Text: {value}")
-        self.table[self.hash_index(key)] = value
+        # if the entry has a value, add a new head
+        if self.table[self.hash_index(key)]: 
+            newHead = HashTableEntry(key, value)
+            newHead.next = self.table[self.hash_index(key)]
+            self.table[self.hash_index(key)] = newHead
+        else:
+            self.table[self.hash_index(key)] = HashTableEntry(key, value)
+        # self.table[self.hash_index(key)] = value
+        # else, add a new HashTableEntry
 
 
     def delete(self, key):
@@ -123,7 +136,16 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        if self.table[self.hash_index(key)]: return self.table[self.hash_index(key)]
+        if self.table[self.hash_index(key)]:
+            newString = ''
+            cur = self.table[self.hash_index(key)]
+            newString += str(cur.value)
+            cur = cur.next
+            while cur:
+                newString += "\n"+str(cur.value)
+                cur = cur.next
+            return newString
+                # return self.table[self.hash_index(key)]
         return None
 
 
