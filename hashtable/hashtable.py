@@ -25,6 +25,7 @@ class HashTable:
 
     def __init__(self, capacity):
         self.capacity = capacity
+        self.fill = 0
         self.table = [None] * capacity
         '''
             Each entry will be the head of a separate linked list.
@@ -52,7 +53,8 @@ class HashTable:
         Implement this.
         """
         # Your code here
-
+        # print(f"Fill: {self.fill/self.capacity} of Capacity: {self.capacity}")
+        return self.fill/self.capacity
 
 
     def fnv1(self, key):
@@ -101,17 +103,23 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        # if the entry has a value, add a new head
         if self.table[self.hash_index(key)]: 
-            newHead = HashTableEntry(key, value)
-            newHead.next = self.table[self.hash_index(key)]
-            self.table[self.hash_index(key)] = newHead
-            # print(f"Key: {key} Index: {self.hash_index(key)} Head: {newHead.value}")
+            if self.table[self.hash_index(key)].key == key:
+                newHead = HashTableEntry(key, value)
+                newHead.next = self.table[self.hash_index(key)].next
+                self.table[self.hash_index(key)] = newHead
+            else:
+                newHead = HashTableEntry(key, value)
+                newHead.next = self.table[self.hash_index(key)]
+                self.table[self.hash_index(key)] = newHead
+                self.fill += 1
         else:
             self.table[self.hash_index(key)] = HashTableEntry(key, value)
-            # print(f"Key: {key} Index: {self.hash_index(key)} Head: {HashTableEntry(key, value).value}")
-        # self.table[self.hash_index(key)] = value
-        # else, add a new HashTableEntry
+            self.fill += 1
+        # print(f"Key added: {self.table[self.hash_index(key)]} at {self.hash_index(key)}")
+        
+        if self.get_load_factor() > 0.7:
+            self.resize(self.capacity * 2)
 
 
     def delete(self, key):
@@ -126,40 +134,17 @@ class HashTable:
         hashedItem = self.table[self.hash_index(key)]
         if hashedItem.key == key:
             self.table[self.hash_index(key)] = self.table[self.hash_index(key)].next
+            self.fill -= 1
 
-        
         while hashedItem.next:
             prev = hashedItem
             hashedItem = hashedItem.next
             if hashedItem.key == key:
+                self.fill -= 1
                 if hashedItem.next:
                     prev.next = hashedItem.next
                 else:
                     prev.next = None
-        
-        # if self.table[self.hash_index(key)]: 
-        #     '''
-        #     The hash was matched, search for the correct key in the table and delete it.
-        #     '''
-        #     # if the current item is the one being deleted, do so.
-        #     if self.table[self.hash_index(key)].key == key:
-        #         self.table[self.hash_index(key)] = self.table[self.hash_index(key)].next
-        #     else:
-        #         prev = self.table[self.hash_index(key)]
-        #         cur = self.table[self.hash_index(key)].next
-        #         if not cur: print(f"Entry with key: {key} not found!")
-        #         while cur.next:
-        #             if cur.key == key:
-        #                 # remove this node
-        #                 prev.next = cur.next
-        #                 # return
-        #                 return
-        #             prev = cur
-        #             cur = cur.next
-        #     # self.table[self.hash_index(key)] = None
-        #     # return
-        # else:
-        #     print(f"Entry with key: {key} not found!")
 
 
     def get(self, key):
@@ -171,29 +156,15 @@ class HashTable:
         Implement this.
         """
         # Your code here
-        """
-        if the first value's key is the key, return the .value
-        """
         hashedItem = self.table[self.hash_index(key)]
-        # print(hashedItem)
+
         if hashedItem:
             if hashedItem.key == key: return hashedItem.value
             while hashedItem.next:
                 hashedItem = hashedItem.next
                 if hashedItem.key == key: return hashedItem.value
         return None
-        # if self.table[self.hash_index(key)]:
-        #     newString = ''
-        #     cur = self.table[self.hash_index(key)]
-        #     newString += cur.value
-        #     cur = cur.next
-        #     while cur:
-        #         newString += "\n"+ cur.value
-        #         cur = cur.next
-        #     print(newString)
-        #     return newString
-        #         # return self.table[self.hash_index(key)]
-        # return None
+
 
 
     def resize(self, new_capacity):
@@ -204,6 +175,24 @@ class HashTable:
         Implement this.
         """
         # Your code here
+        newTable = [None] * new_capacity
+        self.capacity = new_capacity
+
+        for item in self.table:
+            curr = item
+
+            while curr:
+                key, value = curr.key, curr.value
+                if newTable[self.hash_index(key)]: 
+                    newHead = HashTableEntry(key, value)
+                    newHead.next = newTable[self.hash_index(key)]
+                    newTable[self.hash_index(key)] = newHead
+                else:
+                    newTable[self.hash_index(key)] = HashTableEntry(key, value)
+                curr = curr.next
+        
+        self.table = newTable
+            
 
 
 
