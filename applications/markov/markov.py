@@ -43,11 +43,17 @@ for i in range(0, len(words)):
 def is_valid_start_word(word):
     return (word[0] == "\"" and word[1].isupper()) or word[0].isupper()
 
+def is_valid_end_word(word):
+    last_index = -1
+    if word[last_index] == "\"":
+        last_index = -2
+    
+    return word[last_index] == "." or word[last_index] == "?" or word[last_index] == "!"
+
 def markov():
     start_word = 'yo'
     while not is_valid_start_word(start_word):
         start_word = random.choice(keys)
-        # print(f"Trying word: {start_word}")
 
     print(start_word)
 markov()
