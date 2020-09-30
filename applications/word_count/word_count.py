@@ -1,5 +1,24 @@
 def word_count(s):
     # Your code here
+    ig = ["\"", ":", ";", ",", ".", "-", "+", "=", "/", "\\", "|", "[", "]", "{", "}", "(", ")", "*", "^", "&"]
+
+    for c in ig:
+        s = s.replace(c, "")
+
+    sp = ["\n", "\t", "\r"]
+    for c in sp:
+        s = s.replace(c, " ")
+    s = s.split(" ")
+
+    d = {}
+    for w in s:
+        if len(w) > 0:
+            w_low = w.lower()
+            if w_low in d:
+                d[w_low] += 1
+            else:
+                d[w_low] = 1
+    return d
 
 
 
