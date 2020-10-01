@@ -41,7 +41,13 @@ for i in range(0, len(words)):
 # Your code here
 
 def is_valid_start_word(word):
-    return (word[0] == "\"" and word[1].isupper()) or word[0].isupper()
+    if len(word) > 0:
+        if word[0].isupper():
+            return True
+        if len(word) > 1:
+            return (word[0] == "\"" and word[1].isupper())
+    else:
+        return False
 
 def is_valid_end_word(word):
     last_index = -1
@@ -55,5 +61,20 @@ def markov():
     while not is_valid_start_word(start_word):
         start_word = random.choice(keys)
 
+    print("\n")
+
+    last_word = start_word
+    new_word = 'yo'
+    while not is_valid_end_word(new_word):
+        # print(random.choice(follower_dict[last_word]))
+        new_word = random.choice(follower_dict[last_word])
+        start_word += f" {new_word}"
+        last_word = new_word
+
     print(start_word)
+
+markov()
+markov()
+markov()
+markov()
 markov()
